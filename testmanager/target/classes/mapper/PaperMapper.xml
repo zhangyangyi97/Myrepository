@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softeem.mapper.PaperMapper">
+    <!--添加卷子-->
+    <insert id="addPaper">
+        insert into paper
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="paperId!=null and paperId!=''">
+                paperId,
+            </if>
+            <if test="gradeId!=null and gradeId!=''">
+                gradeId,
+            </if>
+            <if test="papername!=null and papername!=''">
+                papername,
+            </if>
+            <if test="coursecount!=null and coursecount!=''">
+                coursecount,
+            </if>
+            <if test="mark!=null and mark!=''">
+                mark,
+            </if>
+            <if test="time!=null and time!=''">
+                time,
+            </if>
+            <if test="firstInit!=null and firstInit!=''">
+                firstInit,
+            </if>
+            <if test="coursetype!=null and coursetype!=''">
+                coursetype,
+            </if>
+            <if test="status!=null and status!=''">
+                status,
+            </if>
+        </trim>
+        value
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="paperId!=null and paperId!=''">
+                #{paperId},
+            </if>
+            <if test="gradeId!=null and gradeId!=''">
+                #{gradeId},
+            </if>
+            <if test="papername!=null and papername!=''">
+                #{papername},
+            </if>
+            <if test="coursecount!=null and coursecount!=''">
+                #{coursecount},
+            </if>
+            <if test="mark!=null and mark!=''">
+                #{mark},
+            </if>
+            <if test="time!=null and time!=''">
+                #{time},
+            </if>
+            <if test="firstInit!=null and firstInit!=''">
+                #{firstInit},
+            </if>
+            <if test="coursetype!=null and coursetype!=''">
+                #{coursetype},
+            </if>
+            <if test="status!=null and status!=''">
+                #{status},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectAllPapers" resultType="Paper">
+        select p.*,cou.ctname,g.gradename from paper p,grade g,coursetype cou
+	        where p.coursetype = cou.coursetype and g.gradeId = p.gradeId
+	            <if test="papername!=null and papername!=''">
+                    and p.papername like concat('%',#{papername},'%')
+                </if>
+                <if test="coursetype!=null and coursetype!=''">
+                    and p.coursetype = #{coursetype}
+                </if>
+                <if test="gradeId!=null and gradeId!=''">
+                    and p.gradeId = #{gradeId}
+                </if>
+    </select>
+
+    <!--查找学生完成的试卷-->
+    <select id="selectFinishPapers" resultType="Paper">
+     SELECT A.* from
+        (select ps.paperstatus,p.*,ps.sid from paper p,paperstudent ps where p.paperId = ps.paperId and ps.paperstatus=#{paperstatus}) as A
+		    where A.sid =( SELECT sid from student where username =#{username})
+    </select>
+</mapper>

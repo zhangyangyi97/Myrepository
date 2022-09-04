@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softeem.mapper.StudentMapper">
+
+    <!--学生登录,通过查找用户名登录-->
+    <select id="findStuByUsername" resultType="Student">
+        select s.*,r.rolename from student s,role r where s.role = r.role and username= #{username}
+    </select>
+
+    <!--学生注册,动态添加-->
+    <insert id="stuRegister" parameterType="Student">
+        insert into student
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username!=null and username!=''">
+                username,
+            </if>
+            <if test="password!=null and password!=''">
+                password,
+            </if>
+            <if test="sex!=null and sex!=''">
+                sex,
+            </if>
+            <if test="birthday!=null and birthday!=''">
+                birthday,
+            </if>
+            <if test="gradeId!=null and gradeId!=''">
+                gradeId,
+            </if>
+            <if test="role!=null and role!=''">
+                role,
+            </if>
+        </trim>
+        value
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username!=null and username!=''">
+                #{username},
+            </if>
+            <if test="password!=null and password!=''">
+                #{password},
+            </if>
+            <if test="sex!=null and sex!=''">
+                #{sex},
+            </if>
+            <if test="birthday!=null and birthday!=''">
+                #{birthday},
+            </if>
+            <if test="gradeId!=null and gradeId!=''">
+                #{gradeId},
+            </if>
+            <if test="role!=null and role!=''">
+                #{role}
+            </if>
+        </trim>
+    </insert>
+
+
+    <!--模糊查询-->
+    <select id="findStuByKeyword" parameterType="Student" resultType="Student">
+        select s.*,g.gradename from student s,grade g where s.gradeId = g.gradeId
+        <if test="username!=null and username!=''">
+            and s.username like concat('%',#{username},'%')
+        </if>
+        <if test="sex!=null and sex!=''">
+            and s.sex = #{sex}
+        </if>
+        <if test="gradeId!=null and gradeId!=''">
+            and g.gradeId = #{gradeId}
+        </if>
+    </select>
+
+
+    <!--修改学生信息-->
+    <update id="updateStudent">
+        update student
+        <set>
+            <if test="username!=null and username!=''">
+                username = #{username},
+            </if>
+            <if test="password!=null and password!=''">
+                password = #{password},
+            </if>
+            <if test="sex!=null and sex!=''">
+                sex = #{sex},
+            </if>
+            <if test="birthday!=null and birthday!=''">
+                birthday = #{birthday},
+            </if>
+            <if test="gradeId!=null and gradeId!=''">
+                gradeId = #{gradeId},
+            </if>
+            <if test="role!=null and role!=''">
+                role = #{role}
+            </if>
+        </set>
+        where sid = #{sid}
+    </update>
+</mapper>

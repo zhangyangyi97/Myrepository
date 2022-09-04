@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.softeem.mapper.CourseMapper">
+
+    <!--每个类型题目里的模糊查询-->
+    <select id="selectChoice"  resultType="Choice">
+        select c.*,ct.ctname,cou.coursename from choice c,coursetype ct,course cou
+	            where c.courseId = cou.courseId and c.coursetype = ct.coursetype
+                    <if test="title!=null and title!=''">
+                        and c.title like concat('%',#{title},'%')
+                    </if>
+                    <if test="courseType!=null and courseType!=''">
+                        and c.coursetype = #{courseType}
+                    </if>
+                    <if test="courseId!=null and courseId!=''">
+                        and c.courseId = #{courseId}
+                    </if>
+    </select>
+
+    <!--查找填空题中数据-->
+    <select id="selectExercise" resultType="Exercise">
+        select e.*,ct.ctname,cou.coursename from exercise e,coursetype ct,course cou
+	        where e.courseId = cou.courseId and e.coursetype = ct.coursetype
+                <if test="title!=null and title!=''">
+                    and e.title like concat('%',#{title},'%')
+                </if>
+                <if test="courseType!=null and courseType!=''">
+                    and e.coursetype = #{courseType}
+                </if>
+                <if test="courseId!=null and courseId!=''">
+                    and e.courseId = #{courseId}
+                </if>
+    </select>
+
+    <!--查找判断题的数据-->
+    <select id="selectTrueOrFalse" resultType="Trueorfalse">
+        select t.*,ct.ctname,cou.coursename from trueorfalse t,coursetype ct,course cou
+	        where t.courseId = cou.courseId and t.coursetype = ct.coursetype
+                <if test="title!=null and title!=''">
+                    and t.title like concat('%',#{title},'%')
+                </if>
+                <if test="courseType!=null and courseType!=''">
+                    and t.coursetype = #{courseType}
+                </if>
+                <if test="courseId!=null and courseId!=''">
+                    and t.courseId = #{courseId}
+                </if>
+    </select>
+
+
+    <insert id="addChoice">
+        insert into choice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="courseId!=null and courseId!=''">
+                courseId,
+            </if>
+            <if test="title!=null and title!=''">
+                title,
+            </if>
+            <if test="answerA!=null and answerA!=''">
+                answerA,
+            </if>
+            <if test="answerB!=null and answerB!=''">
+                answerB,
+            </if>
+            <if test="answerC!=null and answerC!=''">
+                answerC,
+            </if>
+            <if test="answerD!=null and answerD!=''">
+                answerD,
+            </if>
+            <if test="answer!=null and answer!=''">
+                answer,
+            </if>
+            <if test="diff!=null and diff!=''">
+                diff,
+            </if>
+            <if test="point!=null and point!=''">
+                point,
+            </if>
+            <if test="coursetype!=null and coursetype!=''">
+                coursetype
+            </if>
+        </trim>
+        value
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="courseId!=null and courseId!=''">
+                #{courseId},
+            </if>
+            <if test="title!=null and title!=''">
+                #{title},
+            </if>
+            <if test="answerA!=null and answerA!=''">
+                #{answerA},
+            </if>
+            <if test="answerB!=null and answerB!=''">
+                #{answerB},
+            </if>
+            <if test="answerC!=null and answerC!=''">
+                #{answerC},
+            </if>
+            <if test="answerD!=null and answerD!=''">
+                #{answerD},
+            </if>
+            <if test="answer!=null and answer!=''">
+                #{answer},
+            </if>
+            <if test="diff!=null and diff!=''">
+                #{diff},
+            </if>
+            <if test="point!=null and point!=''">
+                #{point},
+            </if>
+            <if test="coursetype!=null and coursetype!=''">
+                #{coursetype}
+            </if>
+        </trim>
+    </insert>
+
+    <!--判断题的添加-->
+    <insert id="addTrusorfalse">
+        insert into trueorfalse (courseId,title,firstanw,secondanw,answer,diff,point,coursetype)
+            value (#{courseId},#{title},#{firstanw},#{secondanw},#{answer},#{diff},#{point},#{coursetype})
+    </insert>
+
+
+    <!--填空简述题的添加-->
+    <insert id="addExercise">
+        insert  into exercise (courseId,title,answer,diff,point,coursetype)
+                value (#{courseId},#{title},#{answer},#{diff},#{point},#{coursetype})
+    </insert>
+
+
+    <!--修改-->
+    <update id="updateChoice">
+        update choice
+        <set>
+            <if test="courseId!=null and courseId!=''">
+                courseId=#{courseId},
+            </if>
+            <if test="title!=null and title!=''">
+                title=#{title},
+            </if>
+            <if test="answerA!=null and answerA!=''">
+                answerA= #{answerA},
+            </if>
+            <if test="answerB!=null and answerB!=''">
+                answerB=#{answerB},
+            </if>
+            <if test="answerC!=null and answerC!=''">
+                answerC=#{answerC},
+            </if>
+            <if test="answerD!=null and answerD!=''">
+                answerD=#{answerD},
+            </if>
+            <if test="answer!=null and answer!=''">
+                answer=#{answer},
+            </if>
+            <if test="diff!=null and diff!=''">
+                diff=#{diff},
+            </if>
+            <if test="point!=null and point!=''">
+                point=#{point},
+            </if>
+            <if test="coursetype!=null and coursetype!=''">
+                coursetype=#{coursetype}
+            </if>
+        </set>
+        where cid = #{cid}
+    </update>
+
+    <update id="updateExercise">
+        update exercise
+        <set>
+            <if test="courseId!=null and courseId!=''">
+                courseId=#{courseId},
+            </if>
+            <if test="title!=null and title!=''">
+                title=#{title},
+            </if>
+            <if test="answer!=null and answer!=''">
+                answer=#{answer},
+            </if>
+            <if test="diff!=null and diff!=''">
+                diff = #{diff}
+            </if>
+            <if test="point!=null and point!=''">
+                point = #{point}
+            </if>
+            <if test="coursetype!=null and coursetype!=''">
+                coursetype = #{coursetype}
+            </if>
+        </set>
+        where eid = #{eid}
+    </update>
+
+    <update id="updateTrue">
+        update trueorfalse
+        <set>
+            <if test="courseId!=null and courseId!=''">
+                courseId=#{courseId},
+            </if>
+            <if test="title!=null and title!=''">
+                title=#{title},
+            </if>
+            <if test="firstanw!=null and firstanw!=''">
+                firstanw=#{firstanw},
+            </if>
+            <if test="secondanw!=null and secondanw!=''">
+                secondanw = #{secondanw}
+            </if>
+            <if test="answer!=null and answer!=''">
+                answer = #{answer}
+            </if>
+            <if test="diff!=null and diff!=''">
+                diff = #{diff}
+            </if>
+            <if test="point!=null and point!=''">
+                point = #{point}
+            </if>
+            <if test="coursetype!=null and coursetype!=''">
+                coursetype = #{coursetype}
+            </if>
+        </set>
+        where tid = #{tid}
+    </update>
+</mapper>
